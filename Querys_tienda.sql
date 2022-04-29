@@ -1,84 +1,62 @@
-#Llista el nom de tots els productos que hi ha en la taula producto.
-SELECT nombre FROM producto;
-#Llista els noms i els preus de tots els productos de la taula producto.
-SELECT nombre, precio FROM producto;
-#Llista totes les columnes de la taula producto.
-SELECT * FROM producto;
-#Llista el nom dels productos, el preu en euros i el preu en dòlars nord-americans (USD).
-SELECT nombre , precio AS 'Precio €', FORMAT(precio*1.10,2) AS 'Precio $' FROM producto;
-#Llista el nom dels productos, el preu en euros i el preu en dòlars nord-americans. Utilitza els següents àlies per a les columnes: nom de producto, euros, dòlars nord-americans.
-SELECT nombre as 'nom_de_producto', CONCAT(precio, '€') AS 'euros' , CONCAT(TRUNCATE(precio*1.10,2), '$') AS 'dòlars_nord-americans' FROM producto;
-#Llista els noms i els preus de tots els productos de la taula producto, convertint els noms a majúscula.
-SELECT upper(nombre) as 'Nombre', CONCAT(precio,'€') AS Precio FROM producto;
-#Llista els noms i els preus de tots els productos de la taula producto, convertint els noms a minúscula.
-SELECT lower(nombre) as 'Nombre', CONCAT(precio,'€') AS Precio FROM producto;
-#Llista el nom de tots els fabricants en una columna, i en una altra columna obtingui en majúscules els dos primers caràcters del nom del fabricant.
-SELECT nombre as 'normal', concat(Upper(LEFT(nombre,2)), LOWER(SUBSTRING(nombre,3))) AS '2 Mayusculas' FROM fabricante;
-#Llista els noms i els preus de tots els productos de la taula producto, arrodonint el valor del preu.
-SELECT nombre, CONCAT(round(precio),'€') AS precio FROM producto;
-#Llista els noms i els preus de tots els productos de la taula producto, truncant el valor del preu per a mostrar-lo sense cap xifra decimal.
-SELECT nombre, CONCAT(truncate(precio,0),'€') AS 'precio' FROM producto;
-#Llista el codi dels fabricants que tenen productos en la taula producto.fabricante
-SELECT codigo_fabricante , nombre FROM producto;
-#Llista el codi dels fabricants que tenen productos en la taula producto, eliminant els codis que apareixen repetits.
-SELECT DISTINCT codigo_fabricante FROM producto;
-#Llista els noms dels fabricants ordenats de manera ascendent.
-SELECT nombre FROM producto ORDER BY nombre ASC;
-#Llista els noms dels fabricants ordenats de manera descendent.
-SELECT nombre FROM producto ORDER BY nombre DESC;
-#Llista els noms dels productos ordenats en primer lloc pel nom de manera ascendent i en segon lloc pel preu de manera descendent.
-SELECT nombre , precio FROM producto ORDER BY nombre ASC , precio DESC;
-#Retorna una llista amb les 5 primeres files de la taula fabricante.
-SELECT * FROM fabricante LIMIT 0, 5;
-#Retorna una llista amb 2 files a partir de la quarta fila de la taula fabricante. La quarta fila també s'ha d'incloure en la resposta.
-SELECT * FROM fabricante LIMIT 3 , 2;
-#Llista el nom i el preu del producto més barat. (Utilitzi solament les clàusules ORDER BY i LIMIT). NOTA: Aquí no podria usar MIN(preu), necessitaria GROUP BY
-SELECT  nombre, concat(precio , '€') as coste FROM producto ORDER BY precio ASC LIMIT 1 ;
-#Llista el nom i el preu del producto més car. (Utilitzi solament les clàusules ORDER BY i LIMIT). NOTA: Aquí no podria usar MAX(preu), necessitaria GROUP BY.
-SELECT  nombre, concat(precio , '€') as coste FROM producto ORDER BY precio DESC LIMIT 1 ;
-#Llista el nom de tots els productos del fabricant el codi de fabricant del qual és igual a 2.
-SELECT nombre, codigo_fabricante FROM producto WHERE codigo_fabricante = 2;
-#Retorna una llista amb el nom del producte, preu i nom de fabricant de tots els productes de la base de dades.
-SELECT producto.nombre , concat(precio,'€') AS coste , fabricante.nombre AS fabricante FROM producto INNER JOIN fabricante ON fabricante.codigo = producto.codigo_fabricante ;
-#Retorna una llista amb el nom del producte, preu i nom de fabricant de tots els productes de la base de dades. Ordeni el resultat pel nom del fabricant, per ordre alfabètic.
-SELECT producto.nombre, concat(precio,'€') AS coste, fabricante.nombre as fabricante FROM producto  INNER JOIN fabricante ON fabricante.codigo = producto.codigo_fabricante ORDER BY fabricante.nombre ASC;
-#Retorna una llista amb el codi del producte, nom del producte, codi del fabricant i nom del fabricant, de tots els productes de la base de dades.
-SELECT producto.codigo AS id, producto.nombre, fabricante.codigo, fabricante.nombre AS fabricante FROM producto INNER JOIN fabricante ON fabricante.codigo = producto.codigo_fabricante;
-#Retorna el nom del producte, el seu preu i el nom del seu fabricant, del producte més barat.
-SELECT producto.nombre , producto.precio, fabricante.nombre AS Fabricante FROM producto INNER JOIN fabricante ON fabricante.codigo = producto.codigo_fabricante ORDER BY precio ASC LIMIT 1;
-#Retorna el nom del producte, el seu preu i el nom del seu fabricant, del producte més car.
-SELECT producto.nombre , producto.precio, fabricante.nombre AS fabricante FROM producto INNER JOIN fabricante ON fabricante.codigo = producto.codigo_fabricante ORDER BY precio DESC LIMIT 1;
-#Retorna una llista de tots els productes del fabricant Lenovo.
-SELECT producto.nombre, fabricante.nombre AS fabricante FROM producto JOIN fabricante ON  producto.codigo_fabricante = fabricante.codigo WHERE codigo_fabricante = 2;
-#Retorna una llista de tots els productes del fabricant Crucial que tinguin un preu major que 200€.
-SELECT producto.nombre, producto.precio, fabricante.nombre AS fabricante FROM producto JOIN fabricante ON producto.codigo_fabricante= fabricante.codigo where codigo_fabricante = 6 and precio >=200;
-#Retorna un llistat amb tots els productes dels fabricants Asus, Hewlett-Packard y Seagate. Sense utilitzar l'operador IN.
-SELECT producto.nombre, fabricante.nombre AS fabricante FROM producto JOIN fabricante ON producto.codigo_fabricante = fabricante.codigo WHERE codigo_fabricante = 1 || codigo_fabricante = 3 || codigo_fabricante = 5;
-#Retorna un llistat amb tots els productes dels fabricants Asus, Hewlett-Packardy Seagate. Utilitzant l'operador IN.
-SELECT producto.nombre, fabricante.nombre AS fabricante FROM producto JOIN fabricante ON producto.codigo_fabricante = fabricante.codigo WHERE codigo_fabricante IN (1,3,5);
-#Retorna un llistat amb el nom i el preu de tots els productes dels fabricants el nom dels quals acabi per la vocal e.
-SELECT producto.nombre, producto.precio, fabricante.nombre AS fabricante FROM producto JOIN fabricante ON producto.codigo_fabricante = fabricante.codigo WHERE fabricante.nombre LIKE '%e';
-#Retorna un llistat amb el nom i el preu de tots els productes el nom de fabricant dels quals contingui el caràcter w en el seu nom.
-SELECT producto.nombre, producto.precio, fabricante.nombre AS fabricante FROM producto JOIN fabricante ON producto.codigo_fabricante = fabricante.codigo WHERE fabricante.nombre LIKE '%w%';
-#Retorna un llistat amb el nom de producte, preu i nom de fabricant, de tots els productes que tinguin un preu major o igual a 180€. Ordeni el resultat en primer lloc pel preu (en ordre descendent) i en segon lloc pel nom (en ordre ascendent)
-SELECT producto.nombre, producto.precio, fabricante.nombre AS fabricante FRom producto JOIN fabricante ON  producto.codigo_fabricante = fabricante.codigo WHERE producto.precio >= 180 ORDER BY producto.precio DESC, producto.nombre ASC;
-#Retorna un llistat amb el codi i el nom de fabricant, solament d'aquells fabricants que tenen productes associats en la base de dades.
-SELECT DISTINCT fabricante.codigo, fabricante.nombre AS Fabricante FROM fabricante INNER JOIN producto ON producto.codigo_fabricante = fabricante.codigo WHERE codigo_fabricante;
-#Retorna un llistat de tots els fabricants que existeixen en la base de dades, juntament amb els productes que té cadascun d'ells. El llistat haurà de mostrar també aquells fabricants que no tenen productes associats.
-SELECT fabricante.nombre AS Fabricante , producto.nombre FROM fabricante LEFT JOIN producto ON producto.codigo_fabricante = fabricante.codigo;
-#Retorna un llistat on només apareguin aquells fabricants que no tenen cap producte associat.
-SELECT fabricante.nombre AS fabricante , producto.nombre FRom fabricante LEFT JOIN producto ON producto.codigo_fabricante = fabricante.codigo WHERE producto.nombre IS NULL;
-#Retorna tots els productes del fabricant Lenovo. (Sense utilitzar INNER JOIN).
-SELECT producto.nombre, producto.precio, fabricante.nombre AS fabricante FROM fabricante RIGHT JOIN producto ON  producto.codigo_fabricante = fabricante.codigo WHERE codigo_fabricante = 2;
-#Retorna totes les dades dels productes que tenen el mateix preu que el producte més car del fabricant Lenovo. (Sense utilitzar INNER JOIN).
-SELECT producto.nombre, producto.precio, fabricante.nombre AS fabricante FROM fabricante RIGHT JOIN producto ON  producto.codigo_fabricante = fabricante.codigo WHERE producto.precio = 559;
-#Llista el nom del producte més car del fabricant Lenovo.
-SELECt producto.nombre FROM fabricante RIGHT join producto ON producto.codigo_fabricante = fabricante.codigo WHERE codigo_fabricante= 2 ORDER BY precio desc limit 1; 
-#Llista el nom del producte més barat del fabricant Hewlett-Packard.
-SELECT producto.nombre FROM fabricante RIGHT join producto ON producto.codigo_fabricante = fabricante.codigo WHERE codigo_fabricante= 3 ORDER BY precio asc limit 1;
-#Retorna tots els productes de la base de dades que tenen un preu major o igual al producte més car del fabricant Lenovo.
-SELECT producto.nombre, producto.precio, fabricante.nombre FROM producto INNER JOIN fabricante ON producto.codigo_fabricante = fabricante.codigo WHERE  producto.precio >=559;
-#Llesta tots els productes del fabricant Asus que tenen un preu superior al preu mitjà de tots els seus productes.
-SELECT producto.nombre , producto.precio, fabricante.nombre FROM producto INNER JOIN fabricante ON  producto.codigo_fabricante = fabricante.codigo WHERE fabricante.codigo = 1 AND precio > ( SELECT avg(all producto.precio) FROM producto  WHERE codigo_fabricante = 1 );
-SELECT * from producto;
+#01. Retorna un llistat amb el primer cognom, segon cognom i el nom de tots els alumnes. El llistat haurà d'estar ordenat alfabèticament de menor a major pel primer cognom, segon cognom i nom.
+select apellido1, apellido2,nombre from persona where tipo= 'alumno' order by apellido1 asc;
+#02. Esbrina el nom i els dos cognoms dels alumnes que no han donat d'alta el seu número de telèfon en la base de dades.
+SELECT nombre, apellido1, apellido2 FROM persona where tipo = lower('alumno') and telefono is null;
+#03. Retorna el llistat dels alumnes que van néixer en 1999.
+select apellido1, apellido2,nombre, fecha_nacimiento from persona where fecha_nacimiento like '1999%';
+#04. Retorna el llistat de professors que no han donat d'alta el seu número de telèfon en la base de dades i a més la seva nif acaba en K.
+select apellido1 , apellido2 , nombre , telefono, tipo, nif from persona where nif like '%K' and tipo = lower('profesor') and telefono is null;
+#05. Retorna el llistat de les assignatures que s'imparteixen en el primer quadrimestre, en el tercer curs del grau que té l'identificador 7.
+select nombre as 'asignatura' from asignatura where cuatrimestre = 1 and curso= 3 and id_grado = 7; 
+#06. Retorna un llistat dels professors juntament amb el nom del departament al qual estan vinculats. El llistat ha de retornar quatre columnes, primer cognom, segon cognom, nom i nom del departament. El resultat estarà ordenat alfabèticament de menor a major pels cognoms i el nom.
+select persona.apellido1 , persona.apellido2 , persona.nombre , departamento.nombre as departamento from persona right join profesor on persona.id = profesor.id_profesor inner join departamento on profesor.id_departamento = departamento.id where persona.tipo = 'profesor' order by persona.apellido1 asc;  
+#07. Retorna un llistat amb el nom de les assignatures, any d'inici i any de fi del curs escolar de l'alumne amb nif 26902806M.
+select asignatura.nombre, curso_escolar.anyo_inicio, curso_escolar.anyo_fin from asignatura join curso_escolar  on asignatura.id = curso_escolar.id join alumno_se_matricula_asignatura on asignatura.id = alumno_se_matricula_asignatura.id_asignatura join persona  on alumno_se_matricula_asignatura.id_alumno = persona.id where nif = '26902806M';
+#08. Retorna un llistat amb el nom de tots els departaments que tenen professors que imparteixen alguna assignatura en el Grau en Enginyeria Informàtica (Pla 2015).
+select distinct departamento.nombre as departamento from departamento inner join profesor on departamento.id = profesor.id_departamento inner join asignatura on profesor.id_profesor = asignatura.id_profesor inner join grado on asignatura.id_grado = grado.id where grado.id = 4;
+#09. Retorna un llistat amb tots els alumnes que s'han matriculat en alguna assignatura durant el curs escolar 2018/2019.
+select distinct persona.nombre, apellido1, apellido2, anyo_inicio, anyo_fin from persona inner join alumno_se_matricula_asignatura on persona.id = alumno_se_matricula_asignatura.id_alumno inner join curso_escolar on alumno_se_matricula_asignatura.id_curso_escolar = curso_escolar.id where anyo_inicio = 2018;
+#select * from curso_escolar; #id5 2018/2019
+select distinct persona.nombre, apellido1, apellido2, anyo_inicio, anyo_fin from persona inner join alumno_se_matricula_asignatura on persona.id = alumno_se_matricula_asignatura.id_alumno inner join curso_escolar on alumno_se_matricula_asignatura.id_curso_escolar = curso_escolar.id inner join asignatura on asignatura.id = alumno_se_matricula_asignatura.id_asignatura where curso_escolar.id = 5;
 
+#Resolgui les 6 següents consultes utilitzant les clàusules LEFT JOIN i RIGHT JOIN.
+
+#01. Retorna un llistat amb els noms de tots els professors i els departaments que tenen vinculats. El llistat també ha de mostrar aquells professors que no tenen cap departament associat. El llistat ha de retornar quatre columnes, nom del departament, primer cognom, segon cognom i nom del professor. El resultat estarà ordenat alfabèticament de menor a major pel nom del departament, cognoms i el nom.
+select persona.apellido1, persona.apellido2 , persona.nombre, departamento.nombre as departamento from persona left join profesor on persona.id = profesor.id_profesor left join departamento on profesor.id_departamento = departamento.id where persona.tipo = 'profesor'  order by departamento.nombre ASC;
+#02. Retorna un llistat amb els professors que no estan associats a un departament.
+select persona.nombre, persona.apellido1, persona.apellido2 from persona left join profesor on persona.id = profesor.id_profesor left join departamento on departamento.id = profesor.id_departamento where persona.tipo = 'profesor' and departamento.nombre is null;
+-- (no entenc la pregunta per que no hi han profesors sense tenir asociat un departament, deixo l'exemple abaix..)
+select * from departamento left join profesor on departamento.id = profesor.id_departamento;
+#03. Retorna un llistat amb els departaments que no tenen professors associats.
+select departamento.nombre from departamento left join profesor on departamento.id = profesor.id_departamento left join persona on profesor.id_profesor = persona.id where persona.nombre is null ;
+#04. Retorna un llistat amb els professors que no imparteixen cap assignatura.
+select persona.nombre, persona.apellido1, persona.apellido2 from persona left join profesor on persona.id = profesor.id_profesor left join asignatura on profesor.id_profesor = asignatura.id_profesor where persona.tipo = 'profesor' and asignatura.nombre is null;
+#05. Retorna un llistat amb les assignatures que no tenen un professor assignat.
+select asignatura.nombre from asignatura left join profesor on profesor.id_profesor = asignatura.id_profesor where asignatura.id_profesor is null; 
+#06. Retorna un llistat amb tots els departaments que no han impartit assignatures en cap curs escolar.
+select distinct departamento.nombre from departamento left join profesor on departamento.id = profesor.id_departamento left join asignatura on profesor.id_profesor = asignatura.id_profesor where asignatura.nombre is null;
+
+#Consultes resum:
+
+#01. Retorna el nombre total d'alumnes que hi ha.
+select count(nombre) from persona where tipo= 'alumno';
+#02. Calcula quants alumnes van néixer en 1999.
+select count(fecha_nacimiento) as alumnos_nacidas_en_1999 from persona where fecha_nacimiento like '1999%' and tipo = 'alumno';
+#03. Calcula quants professors hi ha en cada departament. El resultat només ha de mostrar dues columnes, una amb el nom del departament i una altra amb el nombre de professors que hi ha en aquest departament. El resultat només ha d'incloure els departaments que tenen professors associats i haurà d'estar ordenat de major a menor pel nombre de professors.
+select departamento.nombre as departamento, count(persona.nombre) as numero_de_profesores from persona left join profesor on persona.id = profesor.id_profesor left join departamento on profesor.id_departamento = departamento.id where persona.tipo= 'profesor' group by departamento.nombre order by count(persona.nombre) desc;
+#04. Retorna un llistat amb tots els departaments i el nombre de professors que hi ha en cadascun d'ells. Tingui en compte que poden existir departaments que no tenen professors associats. Aquests departaments també han d'aparèixer en el llistat.
+select departamento.nombre as departamento, count(persona.nombre) as numero_de_profesores from departamento left join profesor on departamento.id = profesor.id_departamento left join persona on profesor.id_profesor =persona.id group by departamento.nombre order by count(persona.nombre) desc;
+#05. Retorna un llistat amb el nom de tots els graus existents en la base de dades i el nombre d'assignatures que té cadascun. Tingui en compte que poden existir graus que no tenen assignatures associades. Aquests graus també han d'aparèixer en el llistat. El resultat haurà d'estar ordenat de major a menor pel nombre d'assignatures.
+select grado.nombre as nombre_grado , count(asignatura.nombre) as numero_asignaturas from grado left join asignatura on grado.id = asignatura.id_grado group by grado.nombre order by count(asignatura.nombre) desc;
+#06. Retorna un llistat amb el nom de tots els graus existents en la base de dades i el nombre d'assignatures que té cadascun, dels graus que tinguin més de 40 assignatures associades.
+select grado.nombre as nombre_grado , count(asignatura.nombre) as numero_asignaturas from grado left join asignatura on grado.id = asignatura.id_grado group by grado.nombre having count(asignatura.nombre)>40 order by count(asignatura.nombre) desc;
+#07. Retorna un llistat que mostri el nom dels graus i la suma del nombre total de crèdits que hi ha per a cada tipus d'assignatura. El resultat ha de tenir tres columnes: nom del grau, tipus d'assignatura i la suma dels crèdits de totes les assignatures que hi ha d'aquest tipus.
+select distinct grado.nombre, asignatura.tipo , sum(asignatura.creditos) as creditos from grado left join asignatura on grado.id = asignatura.id_grado group by grado.nombre , asignatura.tipo order by sum(asignatura.creditos) desc;
+#08. Retorna un llistat que mostri quants alumnes s'han matriculat d'alguna assignatura en cadascun dels cursos escolars. El resultat haurà de mostrar dues columnes, una columna amb l'any d'inici del curs escolar i una altra amb el nombre d'alumnes matriculats.
+select anyo_inicio, count(distinct persona.nombre) as numero_matriculats from curso_escolar left join alumno_se_matricula_asignatura ama on curso_escolar.id = ama.id_curso_escolar left join persona on ama.id_alumno = persona.id group by curso_escolar.anyo_inicio;
+#09. Retorna un llistat amb el nombre d'assignatures que imparteix cada professor. El llistat ha de tenir en compte aquells professors que no imparteixen cap assignatura. El resultat mostrarà cinc columnes: id, nom, primer cognom, segon cognom i nombre d'assignatures. El resultat estarà ordenat de major a menor pel nombre d'assignatures.
+select persona.id, persona.nombre, persona.apellido1, persona.apellido2, count(asignatura.nombre) as numero_asignatura from persona left join profesor on persona.id = profesor.id_profesor left join asignatura on profesor.id_profesor = asignatura.id_profesor where persona.tipo = 'profesor' group by persona.nombre order by count(asignatura.nombre) desc;
+#10. Retorna totes les dades de l'alumne més jove.
+select * from persona left join alumno_Se_matricula_asignatura on alumno_se_matricula_asignatura.id_alumno = persona.id left join asignatura on asignatura.id = alumno_se_matricula_asignatura.id_asignatura group by alumno_se_matricula_asignatura.id_alumno order by fecha_nacimiento desc limit 1;
+#11. Retorna un llistat amb els professors que tenen un departament associat i que no imparteixen cap assignatura.
+select  persona.nombre, persona.apellido1, departamento.nombre as departamento , asignatura.nombre as asignatura  from persona left join profesor on persona.id = profesor.id_profesor left join departamento on profesor.id_departamento = departamento.id left join asignatura on profesor.id_profesor = asignatura.id_profesor where persona.tipo = 'profesor' and asignatura.nombre is null;
